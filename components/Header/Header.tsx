@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { Fragment, useState } from 'react';
-import { Bars3Icon, ChatBubbleLeftIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, ChatBubbleLeftIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import {
   ChevronDownIcon,
   HomeIcon,
@@ -12,7 +12,11 @@ import {
   PlayCircleIcon,
 } from '@heroicons/react/24/solid';
 
-import { Popover, Transition } from '@headlessui/react';
+import {
+  Dialog, Popover, Transition,
+  Disclosure,
+} from '@headlessui/react';
+import cn from '@/lib/utils';
 
 function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -36,10 +40,22 @@ function Header() {
       icon: ChatBubbleLeftIcon,
     },
   ];
+  const callToActions = [
+    {
+      name: 'See Demo Booking',
+      href: '#',
+      icon: PlayCircleIcon,
+    },
+    {
+      name: 'Contact Support',
+      href: '#',
+      icon: PhoneIcon,
+    },
+  ];
   return (
     <header className="bg-[#013894]">
       <nav
-        className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-40"
+        className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-20"
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
@@ -104,11 +120,135 @@ function Header() {
                     </div>
                   ))}
                 </div>
+                <div className="grid grid-cols-2 divide-x divide-gray-900/5 bg-gray-50">
+                  {callToActions.map((item) => (
+                    <a
+                      key={item.name}
+                      href={item.href}
+                      aria-label="link"
+                      className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-[#013894] hover:bg-gray-100"
+                    >
+                      <item.icon className="h-5 w-5 text-[#013894]" aria-hidden="true" />
+                      {item.name}
+                    </a>
+                  ))}
+                </div>
               </Popover.Panel>
             </Transition>
           </Popover>
+          <a href="#" className="text-sm leading-6 text-white font-semibold">
+            Flights
+          </a>
+          <a href="#" className="text-sm leading-6 text-white font-semibold">
+            Car Rentals
+          </a>
+          <a href="#" className="text-sm leading-6 text-white font-semibold">
+            Atractions
+          </a>
+          <a href="#" className="text-sm leading-6 text-white font-semibold">
+            Flights + Hotels
+          </a>
         </Popover.Group>
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+          <a href="#" className="text-sm leading-6 font-semibold text-white">
+            Login
+            {' '}
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+
+        </div>
       </nav>
+      <Dialog
+        as="div"
+        open={mobileOpen}
+        className="lg:hidden"
+        onClose={setMobileOpen}
+      >
+
+        <div className="fixed inset-0 z-10" />
+        <Dialog.Panel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-[#013894] px-6 py-6 sm:max-w-sm sm:ring-1 sm-ring-gray-900/10">
+          <div className="flex lg:flex-1 justify-between">
+            <Link href="/" className="-m-1.5 p-1.5">
+              <span className="sr-only">Booking.com</span>
+              <Image
+                className="w-auto"
+                src="/logo.AVIF"
+                alt="logo"
+                width={120}
+                height={40}
+              />
+            </Link>
+
+            <div className="flex lg:hidden">
+              <button
+                type="button"
+                aria-label="clickme"
+                className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-white"
+                onClick={() => setMobileOpen(false)}
+              >
+                <XMarkIcon className="h-6 w-6" araia-hidden="true" />
+              </button>
+            </div>
+          </div>
+          <div className="mt-6 flow-root">
+            <div className="-my-6 divide-y divide-gray-50">
+              <div className="space-y-2 py-6">
+                <Disclosure as="div" className="-mx-3">
+                  {({ open }) => (
+                    <>
+                      <Disclosure.Button className="flex w-full items-center justify-between rounded-lg py-2 pl-3.5 text-base font-semibold leading-7 text-white hover:bg-blue-800">
+                        <span>Stays</span>
+                        <ChevronDownIcon
+                          className={cn(
+                            open ? 'rotate-180' : '',
+                            'h-5 w-5 flex-none',
+                          )}
+                          aria-hidden="true"
+                        />
+                      </Disclosure.Button>
+                      <Disclosure.Panel className="mt-2 space-y-2">
+                        {[...products, ...callToActions].map((item) => (
+                          <Disclosure.Button
+                            key={item.name}
+                            as="a"
+                            href={item.href}
+                            className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-white hover:bg-blue-800"
+                          >
+                            {item.name}
+                          </Disclosure.Button>
+                        ))}
+                      </Disclosure.Panel>
+                    </>
+                  )}
+
+                </Disclosure>
+                <a href="#" className="block px-3 py-2 -mx-3 text-base leading-7 text-white font-semibold hover:bg-blue-800">
+                  Flights
+                </a>
+                <a href="#" className="block px-3 py-2 -mx-3 text-base leading-7 text-white font-semibold hover:bg-blue-800">
+                  {' '}
+                  Car Rentals
+                </a>
+                <a href="#" className="block px-3 py-2 -mx-3 text-base leading-7 text-white font-semibold hover:bg-blue-800">
+                  {' '}
+                  Atractions
+                </a>
+                <a href="#" className="block px-3 py-2 -mx-3 text-base leading-7 text-white font-semibold hover:bg-blue-800">
+                  {' '}
+                  Flights + Hotels
+                </a>
+                <div className="py-6">
+                  <a href="#" className="-mx-3 rounded-lg px-3 py-2.5 text-base font-semibold text-white hover:bg-blue-800">
+                    Login
+                  </a>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </Dialog.Panel>
+      </Dialog>
     </header>
   );
 }
