@@ -9,7 +9,9 @@
  }, "rules": {
 "react/jsx-props-no-spreading": "off",
 "react/prop-types": "off",
-"jsx-a11y/anchor-is-valid": ["off"]
+"jsx-a11y/anchor-is-valid": ["off"],
+"no-nested-ternary": "off"
+
 }
 
 }
