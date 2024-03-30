@@ -24,6 +24,7 @@ import {
 import { format } from 'date-fns';
 import cn from '@/lib/utils';
 import { Calendar } from '@/components/ui/calendar';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   location: z.string().min(2, 'Must be at least 2 characters').max(50),
@@ -46,6 +47,7 @@ const formSchema = z.object({
 });
 
 function Search() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -59,9 +61,27 @@ function Search() {
       rooms: '1',
     },
   });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+    console.log(values);
+    if (typeof window !== 'undefined') {
+      const checkin_monthday = values.dates.from.getDate().toString();
+      const checkin_month = (values.dates.from.getMonth() + 1).toString();
+      const checkin_year = values.dates.from.getFullYear().toString();
+      const checkoout_monthday = values.dates.from.getDate().toString();
+      const checkout_month = (values.dates.from.getMonth() + 1).toString();
+      const checkout_year = values.dates.from.getFullYear().toString();
+      const checkin = `${checkin_year}-${checkin_month}- ${checkin_monthday}`;
+      const checkout = `${checkout_year}-${checkout_month}-${checkoout_monthday}`;
+      const url = new URL('https://www.booking.com/searchresults.html');
+      url.searchParams.set('ss', values.location);
+      url.searchParams.set('group-adults', values.adults);
+      url.searchParams.set('group-children', values.children);
+      url.searchParams.set('no-rooms', values.rooms);
+      url.searchParams.set('checkin', checkin);
+      url.searchParams.set('checkout', checkout);
+      router.push(`/search?url=${url.href}`);
+    }
   }
   return (
     <Form {...form}>
@@ -194,6 +214,11 @@ function Search() {
                 </FormItem>
               )}
             />
+          </div>
+          <div className="mt-auto">
+            <Button type="submit" className="bg-blue-500 text-base">
+              Search
+            </Button>
           </div>
         </div>
       </form>
